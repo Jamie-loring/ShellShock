@@ -2450,7 +2450,7 @@ rm -rf "$TEMP_CLONE"
 
 log_info "Git clone starting (this may take a moment)..."
 # Use timeout to prevent hanging (60 second timeout)
-if timeout 60 git clone --depth 1 --branch ShellShock https://github.com/Jamie-loring/ShellShock.git "$TEMP_CLONE" 2>&1 | tee -a "$LOG_FILE"; then
+if timeout 60 git clone --depth 1 --branch main https://github.com/Jamie-loring/ShellShock.git "$TEMP_CLONE" 2>&1 | tee -a "$LOG_FILE"; then
     log_success "Repository cloned successfully"
     if [[ -d "$TEMP_CLONE/supplimentals" ]]; then
         mkdir -p "$USER_HOME/Desktop/ShellShock-Scripts"
