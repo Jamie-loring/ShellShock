@@ -261,6 +261,7 @@ hg                      # history | grep
 
 # Files
 c                       # clear
+cc                      # claude --dangerously-skip-permissions
 count                   # wc -l
 mkdir                   # mkdir -pv (auto-create parents)
 df, du, free            # human-readable by default
