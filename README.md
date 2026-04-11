@@ -1,6 +1,6 @@
 # ShellShock v2.4
 
-**Repository:** [Jamie-loring/ShellShock](https://github.com/Jamie-loring/main/blob/main/README.md)
+**Repository:** [Jamie-loring/ShellShock](https://github.com/Jamie-loring/ShellShock)
 
 ---
 
@@ -9,7 +9,7 @@
 ShellShock is an automated pentest environment bootstrap script for **Debian-based** systems. It transforms a fresh install into a complete, production-ready penetration testing box — all with a single command.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Jamie-loring/main/main/install.sh -o /tmp/shellshock.sh
+curl -fsSL https://raw.githubusercontent.com/Jamie-loring/ShellShock/main/install.sh -o /tmp/shellshock.sh
 sudo bash /tmp/shellshock.sh
 ```
 
@@ -17,7 +17,7 @@ sudo bash /tmp/shellshock.sh
 ```
 https://raw.githubusercontent.com/
   Jamie-loring/           (user)
-  Public-scripts/         (repo)
+  ShellShock/             (repo)
   main/               (branch)
   install.sh              (filename)
 ```
