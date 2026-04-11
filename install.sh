@@ -329,7 +329,8 @@ done
 log_info "Upgrading system packages..."
 DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get upgrade -y -qq \
     -o Dpkg::Options::="--force-confdef" \
-    -o Dpkg::Options::="--force-confold"
+    -o Dpkg::Options::="--force-confold" \
+    --fix-missing 2>&1 | tee -a "$LOG_FILE" || log_warn "Some packages could not be upgraded (mirror issues), continuing..."
 
 # Unpin after upgrade
 log_info "Releasing package pins..."
