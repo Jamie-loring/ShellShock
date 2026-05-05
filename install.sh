@@ -1035,6 +1035,25 @@ else
     fi
 fi
 
+# gMSADumper — Group Managed Service Account password dumping
+log_info "Installing gMSADumper..."
+if [[ -d "$USER_HOME/tools/repos/gMSADumper" ]]; then
+    log_skip "gMSADumper already cloned"
+else
+    if safe_clone "https://github.com/micahvandeusen/gMSADumper.git" "$USER_HOME/tools/repos/gMSADumper" "gMSADumper"; then
+        pip3 install --break-system-packages impacket 2>/dev/null | tee -a "$LOG_FILE" || true
+        log_success "gMSADumper installed"
+    else
+        log_warn "Failed to clone gMSADumper (non-critical)"
+    fi
+fi
+
+# Add gMSADumper to PATH via symlink
+if [[ -f "$USER_HOME/tools/repos/gMSADumper/gMSADumper.py" ]] && [[ ! -f "/usr/local/bin/gMSADumper" ]]; then
+    ln -sf "$USER_HOME/tools/repos/gMSADumper/gMSADumper.py" /usr/local/bin/gMSADumper
+    chmod +x /usr/local/bin/gMSADumper
+fi
+
 # ============================================
 # PHASE 8: RUBY TOOLS
 # ============================================
@@ -1525,23 +1544,9 @@ else
     log_skip "Certify.exe already present"
 fi
 
-# KrbRelayUp.exe — Kerberos relay for Windows privesc
-if [[ ! -f "KrbRelayUp.exe" ]]; then
-    log_info "Downloading KrbRelayUp.exe..."
-    KRBRELAY_URL=$(curl -s https://api.github.com/repos/Dec0ne/KrbRelayUp/releases/latest 2>/dev/null | grep "browser_download_url.*KrbRelayUp.exe" | head -n1 | cut -d'"' -f4 || true)
-    if [[ -n "$KRBRELAY_URL" ]]; then
-        if wget -q "$KRBRELAY_URL" -O KrbRelayUp.exe 2>&1 | tee -a "$LOG_FILE" && [[ -s "KrbRelayUp.exe" ]]; then
-            log_success "KrbRelayUp.exe downloaded"
-        else
-            rm -f KrbRelayUp.exe
-            log_warn "KrbRelayUp.exe download failed"
-        fi
-    else
-        log_warn "Could not find KrbRelayUp release URL (non-critical)"
-    fi
-else
-    log_skip "KrbRelayUp.exe already present"
-fi
+# KrbRelayUp.exe — Kerberos relay for Windows privesc (no prebuilt releases; must compile from source)
+# https://github.com/Dec0ne/KrbRelayUp
+log_skip "KrbRelayUp.exe — no prebuilt releases available, compile from source if needed"
 
 # PrintSpoofer64.exe — Windows printer spooler privesc
 if [[ ! -f "PrintSpoofer64.exe" ]]; then
@@ -1556,25 +1561,35 @@ else
     log_skip "PrintSpoofer64.exe already present"
 fi
 
-# GodPotato.exe — Windows token impersonation / potato attack
-if [[ ! -f "GodPotato.exe" ]]; then
-    log_info "Downloading GodPotato.exe..."
+# GodPotato-NET4.exe — Windows token impersonation / potato attack
+if [[ ! -f "GodPotato-NET4.exe" ]]; then
+    log_info "Downloading GodPotato-NET4.exe..."
     GODPOTATO_URL=$(curl -s https://api.github.com/repos/BeichenDream/GodPotato/releases/latest 2>/dev/null | grep "browser_download_url.*NET4.exe" | head -n1 | cut -d'"' -f4 || true)
-    if [[ -z "$GODPOTATO_URL" ]]; then
-        GODPOTATO_URL=$(curl -s https://api.github.com/repos/BeichenDream/GodPotato/releases/latest 2>/dev/null | grep "browser_download_url.*exe" | head -n1 | cut -d'"' -f4 || true)
-    fi
     if [[ -n "$GODPOTATO_URL" ]]; then
-        if wget -q "$GODPOTATO_URL" -O GodPotato.exe 2>&1 | tee -a "$LOG_FILE" && [[ -s "GodPotato.exe" ]]; then
-            log_success "GodPotato.exe downloaded"
+        if wget -q "$GODPOTATO_URL" -O GodPotato-NET4.exe 2>&1 | tee -a "$LOG_FILE" && [[ -s "GodPotato-NET4.exe" ]]; then
+            log_success "GodPotato-NET4.exe downloaded"
         else
-            rm -f GodPotato.exe
-            log_warn "GodPotato.exe download failed"
+            rm -f GodPotato-NET4.exe
+            log_warn "GodPotato-NET4.exe download failed"
         fi
     else
         log_warn "Could not find GodPotato release URL (non-critical)"
     fi
 else
-    log_skip "GodPotato.exe already present"
+    log_skip "GodPotato-NET4.exe already present"
+fi
+
+# SharpDPAPI.exe — DPAPI credential extraction
+if [[ ! -f "SharpDPAPI.exe" ]]; then
+    log_info "Downloading SharpDPAPI.exe..."
+    if wget -q https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/SharpDPAPI.exe -O SharpDPAPI.exe 2>&1 | tee -a "$LOG_FILE" && [[ -s "SharpDPAPI.exe" ]]; then
+        log_success "SharpDPAPI.exe downloaded"
+    else
+        rm -f SharpDPAPI.exe
+        log_warn "Could not fetch SharpDPAPI.exe (non-critical)"
+    fi
+else
+    log_skip "SharpDPAPI.exe already present"
 fi
 
 # mimikatz — credential extraction (pre-compiled)

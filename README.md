@@ -97,6 +97,7 @@ Installed to `~/go/bin/`, all in PATH automatically:
 **System-wide (pip3):**
 ```
 impacket, bloodhound, bloodyAD, mitm6, netexec
+gMSADumper                          # Group Managed Service Account password dumping (~/tools/repos/gMSADumper)
 pwntools, pycryptodome, scapy        # binary exploitation & crypto
 playwright                           # browser automation (XSS/SSRF challenges)
 flask, paramiko, requests, httpx     # web & networking
@@ -130,9 +131,9 @@ Pre-downloaded to `~/tools/windows/`:
 | Rubeus.exe | Kerberos abuse toolkit |
 | PowerView.ps1 | AD enumeration |
 | Certify.exe | ADCS certificate exploitation |
-| KrbRelayUp.exe | Kerberos relay privilege escalation |
 | PrintSpoofer64.exe | Printer spooler token impersonation |
-| GodPotato.exe | Potato-family token impersonation |
+| GodPotato-NET4.exe | Potato-family token impersonation |
+| SharpDPAPI.exe | DPAPI credential extraction |
 | mimikatz.exe | Credential extraction |
 | chisel.exe | TCP/UDP tunnel (Windows client) |
 | nc.exe | Netcat for Windows |
