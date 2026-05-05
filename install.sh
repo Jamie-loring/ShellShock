@@ -999,7 +999,7 @@ if command_exists pipx; then
         "certipy-ad"
         "ROPgadget"
         "ropper"
-        "crackmapexec"
+        # crackmapexec is EOL — superseded by NetExec (nxc), already installed above
     )
 
     for tool in "${PIPX_TOOLS[@]}"; do

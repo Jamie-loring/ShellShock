@@ -48,8 +48,10 @@ gem_pkg() {
     else fail "$1 (gem) not installed"; fi
 }
 gobin() {
-    if [[ -f "$HOME/go/bin/$1" ]] || command -v "$1" &>/dev/null; then pass "$1 (go)"
-    else fail "$1 (go) missing — reinstall: go install"; fi
+    # $1 = tool name for display; $2 = actual binary name if different (e.g. ligolo-ng -> proxy)
+    local tool="$1" binary="${2:-$1}"
+    if [[ -f "$HOME/go/bin/$binary" ]] || command -v "$binary" &>/dev/null; then pass "$tool (go)"
+    else fail "$tool (go) missing — reinstall: go install"; fi
 }
 
 echo -e "${BOLD}ShellShock Bootstrap Audit${NC}  —  $(date)"
@@ -59,17 +61,24 @@ echo -e "Home: $HOME"
 section "Phase 3 — Core Packages"
 for p in curl wget git vim tmux unzip p7zip-full build-essential gcc make cmake \
           python3 python3-pip pipx ruby ruby-dev \
-          nmap masscan socat tcpdump wireshark tshark dnsutils ldap-utils openvpn \
+          nmap masscan socat tcpdump wireshark tshark ldap-utils openvpn \
           nikto wfuzz sqlmap whatweb \
           gdb patchelf nasm mingw-w64 osslsigncode \
-          binwalk steghide exiftool foremost \
+          binwalk steghide foremost \
           john hashcat hydra \
           enum4linux smbmap nbtscan \
           metasploit-framework exploitdb \
-          proxychains4 sshpass rlwrap \
-          docker.io nodejs npm; do
+          proxychains4 sshpass rlwrap; do
     pkg "$p"
 done
+# Tools where package name differs across Debian/Parrot versions — check binary
+cmd dig      # dnsutils / bind9-dnsutils
+cmd nslookup # dnsutils / bind9-dnsutils
+cmd exiftool # libimage-exiftool-perl
+# nodejs/npm may come from nodesource (not debian repos) — check binary
+cmd node; cmd npm
+# docker may be installed as docker-ce rather than docker.io
+command -v docker &>/dev/null && pass "docker" || pkg docker.io
 
 # ── PHASE 5: GO ───────────────────────────────────────────────────────────────
 section "Phase 5 — Go"
@@ -92,9 +101,9 @@ fi
 
 # ── PHASE 7: PYTHON TOOLS ─────────────────────────────────────────────────────
 section "Phase 7 — Python Tools"
-for m in impacket bloodhound bloodyAD mitm6 pwntools pycryptodome scapy \
-          flask paramiko PyJWT requests beautifulsoup4 lxml pyOpenSSL \
-          python_dotenv mcp interpreter playwright; do
+for m in impacket bloodhound bloodyAD mitm6 pwn Crypto scapy \
+          flask paramiko jwt requests bs4 lxml OpenSSL \
+          dotenv mcp playwright; do
     pymod "$m"
 done
 cmd nxc; cmd netexec
@@ -103,7 +112,7 @@ pipx_pkg ldapdomaindump
 pipx_pkg sprayhound
 pipx_pkg ROPgadget
 pipx_pkg ropper
-pipx_pkg crackmapexec
+# crackmapexec superseded by nxc — not checked
 
 # gMSADumper (cloned, not pip)
 dir "$HOME/tools/repos/gMSADumper" "gMSADumper repo"
@@ -117,10 +126,10 @@ gem_pkg haiti-hash
 
 # ── PHASE 9: GO SECURITY TOOLS ───────────────────────────────────────────────
 section "Phase 9 — Go Security Tools"
-for t in httpx subfinder dnsx nuclei ffuf gobuster kerbrute chisel ligolo-ng \
-          interactsh-client katana naabu gf anew; do
-    gobin "$t"
-done
+gobin httpx; gobin subfinder; gobin dnsx; gobin nuclei; gobin ffuf
+gobin gobuster; gobin kerbrute; gobin chisel; gobin interactsh-client
+gobin katana; gobin naabu; gobin gf; gobin anew
+gobin "ligolo-ng" "proxy"  # installs as 'proxy' binary
 
 # ── PHASE 10: REPOS, WORDLISTS & SCRIPTS ─────────────────────────────────────
 section "Phase 10 — Repos"
@@ -142,9 +151,9 @@ file "$HOME/tools/scripts/linpeas.sh"   "linpeas.sh"
 file "$HOME/tools/scripts/winpeas.exe"  "winpeas.exe"
 file "$HOME/tools/scripts/penelope.py"  "penelope.py"
 file "$HOME/tools/scripts/pspy64"       "pspy64"
-cmd  stegseek
-cmd  rustscan
-cmd  feroxbuster
+cmd stegseek
+cmd feroxbuster
+command -v rustscan &>/dev/null && pass "rustscan" || warn "rustscan not in PATH (no prebuilt releases currently — install via cargo if needed)"
 
 # ── PHASE 10.5: BINARY EXPLOITATION ──────────────────────────────────────────
 section "Phase 10.5 — Binary Exploitation"
@@ -173,13 +182,16 @@ file "$WIN/nc.exe"              "nc.exe"
 
 # ── PHASE 12: CUSTOM ENVIRONMENT ─────────────────────────────────────────────
 section "Phase 12 — Custom Environment"
-if source "$HOME/.shellshock_env" 2>/dev/null; then
-    # Verify key impacket aliases resolved
+if [[ -f "$HOME/.shellshock_env" ]]; then
+    pass "~/.shellshock_env exists"
+    shopt -s expand_aliases
+    source "$HOME/.shellshock_env" 2>/dev/null
     for a in secretsdump GetNPUsers GetUserSPNs getTGT getST smbserver psexec wmiexec; do
-        command -v "$a" &>/dev/null && pass "alias: $a" || fail "alias: $a not available (source ~/.shellshock_env)"
+        if alias "$a" &>/dev/null; then pass "alias: $a"
+        else fail "alias: $a not defined — re-source ~/.shellshock_env"; fi
     done
 else
-    fail "~/.shellshock_env failed to source"
+    fail "~/.shellshock_env missing"
 fi
 
 # ── PHASE 16: CLAUDE CODE ─────────────────────────────────────────────────────
