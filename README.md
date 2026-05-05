@@ -1,4 +1,4 @@
-# ShellShock v2.5
+# ShellShock v3
 
 **Repository:** [Jamie-loring/ShellShock](https://github.com/Jamie-loring/ShellShock)
 
@@ -446,13 +446,13 @@ ShellShock won't reinstall what's already there:
 
 ## Changelog
 
-### v2.5 (May 2026)
+### v3 (May 2026)
 * Added `osslsigncode` to CORE_PACKAGES for PE authenticode signing
 * Added `open-interpreter` (0.4.3) to Python tools — LLM-powered code execution agent
 * README: updated Core System Packages and Python tools sections
 
 ### v2.4 (March 2026)
-* Added Claude Code CLI installation (Phase 15.5) with default CLAUDE.md template
+* Added Claude Code CLI installation (Phase 16) with default CLAUDE.md template
 * Added `pass` to CORE_PACKAGES for GPG-encrypted credential storage
 * Added `mcp` (Model Context Protocol Python SDK) to Python tools
 * README: added MCP, Ghost Browser VM, and Claude Code sections
