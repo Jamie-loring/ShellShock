@@ -67,6 +67,7 @@ nikto, dirb, wfuzz, sqlmap,
 john, hashcat, hydra, nfs-common, snmp, ftp,
 exploitdb, metasploit-framework,
 smbclient, cifs-utils,
+mingw-w64, osslsigncode,            # cross-compilation + PE authenticode signing
 pass                    # GPG-encrypted credential storage
 ```
 
@@ -101,6 +102,7 @@ playwright                           # browser automation (XSS/SSRF challenges)
 flask, paramiko, requests, httpx     # web & networking
 PyJWT, pyOpenSSL, beautifulsoup4     # auth & parsing
 mcp                                  # Model Context Protocol SDK
+open-interpreter                     # LLM-powered code execution agent
 python-dotenv
 ```
 
@@ -444,6 +446,11 @@ ShellShock won't reinstall what's already there:
 
 ## Changelog
 
+### v2.5 (May 2026)
+* Added `osslsigncode` to CORE_PACKAGES for PE authenticode signing
+* Added `open-interpreter` (0.4.3) to Python tools — LLM-powered code execution agent
+* README: updated Core System Packages and Python tools sections
+
 ### v2.4 (March 2026)
 * Added Claude Code CLI installation (Phase 15.5) with default CLAUDE.md template
 * Added `pass` to CORE_PACKAGES for GPG-encrypted credential storage
@@ -593,4 +600,4 @@ This script is **100% free** to modify and distribute — but you **cannot charg
 ---
 
 **Author:** Jamie Loring
-**Last Updated:** March 2026
+**Last Updated:** May 2026

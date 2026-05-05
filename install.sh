@@ -3,7 +3,7 @@
 # Automated Pentesting Environment Bootstrap
 # Debian/Ubuntu/Parrot Compatible
 # Author: Jamie Loring
-# Last updated: 2026-03-30
+# Last updated: 2026-05-05
 # ============================================
 # ============================================
 # DISCLAIMER: This tool is for authorized testing only.
@@ -571,6 +571,7 @@ CORE_PACKAGES=(
 
     # Cross-compilation (Windows exploits)
     "mingw-w64"
+    "osslsigncode"
 
     # Containers
     "docker.io"
@@ -963,6 +964,18 @@ else
         log_success "NetExec installed"
     else
         log_warn "Failed to install NetExec (non-critical)"
+    fi
+fi
+
+# open-interpreter - special case (pip name != import name)
+log_info "Installing open-interpreter..."
+if python3 -c "import interpreter" 2>/dev/null; then
+    log_skip "open-interpreter already installed"
+else
+    if pip3 install --break-system-packages open-interpreter 2>&1 | tee -a "$LOG_FILE"; then
+        log_success "open-interpreter installed"
+    else
+        log_warn "Failed to install open-interpreter (non-critical)"
     fi
 fi
 
