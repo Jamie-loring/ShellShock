@@ -1,4 +1,4 @@
-# ShellShock v2.4
+# ShellShock v2.5
 
 **Repository:** [Jamie-loring/ShellShock](https://github.com/Jamie-loring/ShellShock)
 
@@ -57,18 +57,34 @@ ShellShock runs through 15 phases automatically:
 ### Core System Packages
 
 ```
+# essentials
 curl, wget, git, vim, nano, unzip, p7zip-full, tmux,
+
+# build tools
 build-essential, gcc, g++, make, cmake, pkg-config,
-python3, python3-pip, python3-venv, pipx,
-ruby, ruby-dev,
+
+# python / ruby
+python3, python3-pip, python3-venv, pipx, ruby, ruby-dev,
+
+# network & scanning
 nmap, masscan, netcat-traditional, socat, tcpdump, wireshark, tshark,
 dnsutils, whois, host, ldap-utils, openssl,
+
+# web
 nikto, dirb, wfuzz, sqlmap,
+
+# cracking & exploitation
 john, hashcat, hydra, nfs-common, snmp, ftp,
 exploitdb, metasploit-framework,
+
+# smb
 smbclient, cifs-utils,
-mingw-w64, osslsigncode,            # cross-compilation + PE authenticode signing
-pass                    # GPG-encrypted credential storage
+
+# cross-compilation & code signing
+mingw-w64, osslsigncode,
+
+# credentials
+pass                                 # GPG-encrypted credential storage
 ```
 
 ### Go Security Tools (1.23.3)
